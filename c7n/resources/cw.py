@@ -1296,3 +1296,165 @@ class DeliveryDestinationDelete(BaseAction):
                 ignore_err_codes=('ResourceNotFoundException',),
                 name=r['name'],
             )
+
+# ========================================================================
+# CloudWatch Synthetics Canaries
+# ========================================================================
+
+@resources.register('cloudwatch-synthetics')
+class SyntheticsCanary(QueryResourceManager):
+    """AWS CloudWatch Synthetics Canary
+
+    Example:
+        .. code-block:: yaml
+
+            policies:
+              - name: stop-failed-canaries
+                resource: aws.cloudwatch-synthetics
+                filters:
+                  - State.CurrentStatus.State: FAILED
+                actions:
+                  - type: delete
+    """
+
+    class resource_type(TypeInfo):
+        service = 'synthetics'
+        enum_spec = ('describe_canaries', 'Canaries', None)
+        id = 'Id'
+        name = 'Name'
+        date = 'LastModified'
+        arn_type = 'canary'
+        dimension = 'CanaryName'
+        cfn_type = 'AWS::Synthetics::Canary'
+        universal_taggable = True
+
+    permissions = ("synthetics:DescribeCanaries",)
+
+    def augment(self, resources):
+        """Augment canary resources with tags"""
+        client = local_session(self.session_factory).client('synthetics')
+        for r in resources:
+            try:
+                tags = client.list_tags_for_resource(ResourceArn=r['Arn']).get('Tags', {})
+                # Normalize tags into Key/Value pairs like other resources
+                r['Tags'] = [{'Key': k, 'Value': v} for k, v in tags.items()]
+            except client.exceptions.ValidationException:
+                r['Tags'] = []
+        return resources
+
+from c7n.actions import BaseAction
+
+@SyntheticsCanary.action_registry.register('start')
+class StartCanary(BaseAction):
+    schema = type_schema('start')
+    def process(self, resources):
+        client = local_session(self.manager.session_factory).client('synthetics')
+        for r in resources:
+            client.start_canary(Name=r['Name'])
+
+@SyntheticsCanary.action_registry.register('stop')
+class StopCanary(BaseAction):
+    schema = type_schema('stop')
+    def process(self, resources):
+        client = local_session(self.manager.session_factory).client('synthetics')
+        for r in resources:
+            client.stop_canary(Name=r['Name'])
+
+@SyntheticsCanary.action_registry.register('delete')
+class DeleteCanary(BaseAction):
+    schema = type_schema('delete')
+    def process(self, resources):
+        client = local_session(self.manager.session_factory).client('synthetics')
+        for r in resources:
+            client.delete_canary(Name=r['Name'])
+
+@SyntheticsCanary.filter_registry.register('owner-contact')
+class OwnerContactFilter(Filter):
+    """Filter canaries missing the required OwnerContact tag
+
+    Example:
+        .. code-block:: yaml
+
+            policies:
+              - name: enforce-ownercontact
+                resource: aws.cw-synthetics-canary
+                filters:
+                  - type: owner-contact
+    """
+
+    schema = type_schema('owner-contact')
+    permissions = ("synthetics:ListTagsForResource",)
+
+    def process(self, resources, event=None):
+        results = []
+        for r in resources:
+            tags = {t['Key']: t['Value'] for t in r.get('Tags', [])}
+            if not tags.get('OwnerContact'):
+                results.append(r)
+        return results
+
+@SyntheticsCanary.filter_registry.register('state')
+class CanaryStateFilter(ValueFilter):
+    """Filter canaries by their current state"""
+
+    schema = type_schema('state', rinherit=ValueFilter.schema)
+    permissions = ('synthetics:DescribeCanaries',)
+
+    def __call__(self, r):
+        return self.match(r.get('Status', {}).get('State'))
+
+@SyntheticsCanary.filter_registry.register('arn')
+class CanaryArnFilter(ValueFilter):
+    """Filter canaries by their ARN"""
+
+    schema = type_schema('arn', rinherit=ValueFilter.schema)
+    permissions = ('synthetics:DescribeCanaries',)
+
+    def __call__(self, r):
+        return self.match(r.get('Arn'))
+
+
+@SyntheticsCanary.filter_registry.register('name')
+class CanaryNameFilter(ValueFilter):
+    """Filter canaries by their Name"""
+
+    schema = type_schema('name', rinherit=ValueFilter.schema)
+    permissions = ('synthetics:DescribeCanaries',)
+
+    def __call__(self, r):
+        return self.match(r.get('Name'))
+
+@SyntheticsCanary.filter_registry.register('https-only')
+class CanaryHttpsFilter(Filter):
+    """Filter canaries that connect to non-HTTPS endpoints (port 80 etc.)
+
+    Example:
+        .. code-block:: yaml
+
+            policies:
+              - name: enforce-https-canaries
+                resource: aws.cw-synthetics-canary
+                filters:
+                  - type: https-only
+    """
+
+    schema = type_schema('https-only')
+    permissions = ("synthetics:DescribeCanaries",)
+
+    def process(self, resources, event=None):
+        non_compliant = []
+        for r in resources:
+            # Canary script config often has endpoint in RunConfig.EnvironmentVariables
+            url = None
+            env_vars = r.get('RunConfig', {}).get('EnvironmentVariables', {})
+            if 'ENDPOINT_URL' in env_vars:
+                url = env_vars['ENDPOINT_URL']
+
+            # fallback check in Code/Handler/ArtifactS3Location if necessary
+            if not url:
+                continue
+
+            if re.match(r"^http://", url) or re.match(r".*:(80)$", url):
+                non_compliant.append(r)
+
+        return non_compliant
