@@ -43,30 +43,30 @@
                     "year": 2025,
                     "month": 9,
                     "day": 1,
-                    "hour": 17,
-                    "minute": 59,
-                    "second": 15,
-                    "microsecond": 162000
+                    "hour": 20,
+                    "minute": 13,
+                    "second": 13,
+                    "microsecond": 48000
                 },
                 "LastStarted": {
                     "__class__": "datetime",
                     "year": 2025,
                     "month": 9,
                     "day": 1,
-                    "hour": 17,
-                    "minute": 55,
-                    "second": 42,
-                    "microsecond": 613000
+                    "hour": 20,
+                    "minute": 11,
+                    "second": 12,
+                    "microsecond": 599000
                 },
                 "LastStopped": {
                     "__class__": "datetime",
                     "year": 2025,
                     "month": 9,
                     "day": 1,
-                    "hour": 14,
-                    "minute": 5,
-                    "second": 2,
-                    "microsecond": 638000
+                    "hour": 19,
+                    "minute": 7,
+                    "second": 52,
+                    "microsecond": 657000
                 }
             },
             "ArtifactS3Location": "cw-syn-results-644160558196-us-east-1/canary/us-east-1/c7n-test-canary-stop-800-474eec3cfc67",

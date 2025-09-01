@@ -1324,6 +1324,7 @@ class SyntheticsCanary(QueryResourceManager):
         dimension = 'CanaryName'
         config_type = cfn_type = 'AWS::Synthetics::Canary'
         enum_spec = ('describe_canaries', 'Canaries', None)
+        detail_spec = ('get_canary', 'Name', 'Name' 'Canary')
         universal_taggable = True
 
     permissions = (
