@@ -1,5 +1,5 @@
-const synthetics = require("Synthetics");
-const log = require("SyntheticsLogger");
+const synthetics = require('Synthetics');
+const log = require('SyntheticsLogger');
 
 const canaryTest = async function () {
   let request = new synthetics.HttpRequest("https://example.com/");

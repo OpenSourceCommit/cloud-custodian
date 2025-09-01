@@ -1,0 +1,1 @@
+2025-09-01 19:07:44,118 - custodian.policy - INFO - policy:filter-canary-by-tag resource:aws.cloudwatch-synthetics region:us-east-1 count:1 time:6.68

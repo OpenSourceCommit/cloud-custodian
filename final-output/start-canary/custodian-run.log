@@ -1,0 +1,2 @@
+2025-09-01 19:07:49,138 - custodian.policy - INFO - policy:start-canary resource:aws.cloudwatch-synthetics region:us-east-1 count:1 time:0.00
+2025-09-01 19:07:50,087 - custodian.policy - INFO - policy:start-canary action:startcanary resources:1 execution_time:0.95

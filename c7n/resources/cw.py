@@ -10,7 +10,7 @@ import botocore.exceptions
 from botocore.config import Config
 
 from c7n import query
-from c7n.actions import BaseAction
+from c7n.actions import Action, BaseAction
 from c7n.exceptions import PolicyValidationError
 from c7n.filters import Filter, MetricsFilter
 from c7n.filters.core import parse_date, ValueFilter
@@ -1297,9 +1297,6 @@ class DeliveryDestinationDelete(BaseAction):
                 name=r['name'],
             )
 
-# ========================================================================
-# CloudWatch Synthetics Canaries
-# ========================================================================
 
 @resources.register('cloudwatch-synthetics')
 class SyntheticsCanary(QueryResourceManager):
@@ -1319,54 +1316,96 @@ class SyntheticsCanary(QueryResourceManager):
 
     class resource_type(TypeInfo):
         service = 'synthetics'
-        enum_spec = ('describe_canaries', 'Canaries', None)
         id = 'Id'
         name = 'Name'
-        date = 'LastModified'
+        date = 'Created'
         arn_type = 'canary'
+        arn = 'Arn'
         dimension = 'CanaryName'
-        cfn_type = 'AWS::Synthetics::Canary'
+        config_type = cfn_type = 'AWS::Synthetics::Canary'
+        enum_spec = ('describe_canaries', 'Canaries', None)
         universal_taggable = True
 
-    permissions = ("synthetics:DescribeCanaries",)
+    permissions = (
+    "synthetics:DescribeCanaries",
+    "synthetics:ListTagsForResource",
+    "synthetics:StartCanary",
+    "synthetics:StopCanary",
+    "synthetics:DeleteCanary",)
 
     def augment(self, resources):
-        """Augment canary resources with tags"""
         client = local_session(self.session_factory).client('synthetics')
+        region = self.config.region
+
+        sts = local_session(self.session_factory).client('sts')
+        real_account_id = sts.get_caller_identity()["Account"]
+
         for r in resources:
-            try:
-                tags = client.list_tags_for_resource(ResourceArn=r['Arn']).get('Tags', {})
-                # Normalize tags into Key/Value pairs like other resources
-                r['Tags'] = [{'Key': k, 'Value': v} for k, v in tags.items()]
-            except client.exceptions.ValidationException:
-                r['Tags'] = []
+            arn = r.get("Arn")
+            if not arn:
+                arn = f"arn:aws:synthetics:{region}:{real_account_id}:canary:{r['Name']}"
+                r["Arn"] = arn
+            # AWS returns tags as a dict { "Key": "Value" }
+            tag_dict = client.list_tags_for_resource(ResourceArn=arn).get("Tags", {})
+
+            # Custodian expects [{"Key": k, "Value": v}, ...]
+            r["Tags"] = [{"Key": k, "Value": v} for k, v in tag_dict.items()]
+
         return resources
 
-from c7n.actions import BaseAction
 
 @SyntheticsCanary.action_registry.register('start')
 class StartCanary(BaseAction):
     schema = type_schema('start')
+
     def process(self, resources):
         client = local_session(self.manager.session_factory).client('synthetics')
         for r in resources:
             client.start_canary(Name=r['Name'])
 
+
 @SyntheticsCanary.action_registry.register('stop')
 class StopCanary(BaseAction):
     schema = type_schema('stop')
+
     def process(self, resources):
+        """Stop all running resources"""
         client = local_session(self.manager.session_factory).client('synthetics')
         for r in resources:
             client.stop_canary(Name=r['Name'])
 
+
 @SyntheticsCanary.action_registry.register('delete')
 class DeleteCanary(BaseAction):
     schema = type_schema('delete')
+
     def process(self, resources):
+        """Delete resources"""
         client = local_session(self.manager.session_factory).client('synthetics')
         for r in resources:
             client.delete_canary(Name=r['Name'])
+
+
+@SyntheticsCanary.action_registry.register('report-canary-urls')
+class ReportCanaryUrls(Action):
+    """Action to log/report canary URLs"""
+
+    schema = {
+        'type': 'object',
+        'properties': {
+            'type': {'enum': ['report-canary-urls']}
+        }
+    }
+
+    def process(self, resources):
+        for r in resources:
+            url = (
+                r.get('RunConfig', {}).get('EnvironmentVariables', {}).get('endpoint')
+                or jmespath_search('RunConfig.EnvironmentVariables.URL', r)
+            )
+            self.log.info("Canary %s -> URL: %s", r['Name'], url)
+        return resources
+
 
 @SyntheticsCanary.filter_registry.register('owner-contact')
 class OwnerContactFilter(Filter):
@@ -1393,6 +1432,7 @@ class OwnerContactFilter(Filter):
                 results.append(r)
         return results
 
+
 @SyntheticsCanary.filter_registry.register('state')
 class CanaryStateFilter(ValueFilter):
     """Filter canaries by their current state"""
@@ -1402,6 +1442,7 @@ class CanaryStateFilter(ValueFilter):
 
     def __call__(self, r):
         return self.match(r.get('Status', {}).get('State'))
+
 
 @SyntheticsCanary.filter_registry.register('arn')
 class CanaryArnFilter(ValueFilter):
@@ -1423,6 +1464,7 @@ class CanaryNameFilter(ValueFilter):
 
     def __call__(self, r):
         return self.match(r.get('Name'))
+
 
 @SyntheticsCanary.filter_registry.register('https-only')
 class CanaryHttpsFilter(Filter):
@@ -1458,3 +1500,30 @@ class CanaryHttpsFilter(Filter):
                 non_compliant.append(r)
 
         return non_compliant
+
+
+@SyntheticsCanary.filter_registry.register('canary-url')
+class CanaryUrlFilter(Filter):
+    """Filter canaries by matching their endpoint URL"""
+
+    schema = {
+        'type': 'object',
+        'properties': {
+            'type': {'enum': ['canary-url']},
+            'value': {'type': 'string'}
+        },
+        'required': ['value']
+    }
+
+    def process(self, resources, event=None):
+        value = self.data['value']
+        matched = []
+        for r in resources:
+            # URL is often in RunConfig or Code.SourceLocation
+            url = (
+                r.get('RunConfig', {}).get('EnvironmentVariables', {}).get('endpoint')
+                or jmespath_search('RunConfig.EnvironmentVariables.URL', r)
+            )
+            if url and value in url:
+                matched.append(r)
+        return matched

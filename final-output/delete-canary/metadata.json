@@ -1,0 +1,86 @@
+{
+  "policy": {
+    "name": "delete-canary",
+    "resource": "aws.cloudwatch-synthetics",
+    "filters": [
+      {
+        "Name": "c7n-test-canary-delete"
+      }
+    ],
+    "actions": [
+      "delete"
+    ]
+  },
+  "version": "0.9.46",
+  "execution": {
+    "id": "5b3fc384-2149-40b9-85d4-564681e1ef33",
+    "start": 1756750064.1203122,
+    "end_time": 1756750068.1217194,
+    "duration": 4.001407146453857
+  },
+  "config": {
+    "region": "us-east-1",
+    "regions": [
+      "us-east-1"
+    ],
+    "cache": "~/.cache/cloud-custodian.cache",
+    "profile": null,
+    "account_id": "341823313949",
+    "assume_role": null,
+    "session_policy": null,
+    "external_id": null,
+    "log_group": null,
+    "tracer": null,
+    "metrics_enabled": null,
+    "metrics": null,
+    "output_dir": "./final-output",
+    "cache_period": 15,
+    "dryrun": false,
+    "authorization_file": null,
+    "subparser": "run",
+    "config": null,
+    "configs": [
+      "real_policies.yml"
+    ],
+    "policy_filters": [],
+    "resource_types": [],
+    "verbose": null,
+    "quiet": null,
+    "debug": false,
+    "skip_validation": false,
+    "command": "c7n.commands.run",
+    "vars": null
+  },
+  "sys-stats": {
+    "snapshot_time": 4.001514196395874,
+    "num_fds": 1,
+    "cpu_user": 0.13000000000000012,
+    "num_ctx_switches_voluntary": 6,
+    "read_count": 110,
+    "write_count": 8,
+    "write_bytes": 8192
+  },
+  "api-stats": {
+    "synthetics.DeleteCanary": 1
+  },
+  "metrics": [
+    {
+      "MetricName": "ResourceCount",
+      "Timestamp": "2025-09-01T19:07:44.122214",
+      "Value": 1,
+      "Unit": "Count"
+    },
+    {
+      "MetricName": "ResourceTime",
+      "Timestamp": "2025-09-01T19:07:44.122232",
+      "Value": 0.0008847713470458984,
+      "Unit": "Seconds"
+    },
+    {
+      "MetricName": "ActionTime",
+      "Timestamp": "2025-09-01T19:07:48.121694",
+      "Value": 3.9989571571350098,
+      "Unit": "Seconds"
+    }
+  ]
+}

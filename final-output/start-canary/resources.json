@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "7f3e1d53-b739-4ded-9f0e-d24b5153a9ae",
+    "Name": "c7n-test-canary-start",
+    "Code": {
+      "Handler": "pageLoadBlueprint.handler"
+    },
+    "ExecutionRoleArn": "arn:aws:iam::341823313949:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-start-7cd-79c79eff8135",
+    "Schedule": {
+      "Expression": "rate(5 minutes)",
+      "DurationInSeconds": 0,
+      "RetryConfig": {
+        "MaxRetries": 0
+      }
+    },
+    "RunConfig": {
+      "TimeoutInSeconds": 300,
+      "MemoryInMB": 1500,
+      "ActiveTracing": false,
+      "EphemeralStorage": 1024
+    },
+    "SuccessRetentionPeriodInDays": 31,
+    "FailureRetentionPeriodInDays": 31,
+    "Status": {
+      "State": "STOPPED"
+    },
+    "Timeline": {
+      "Created": "2025-09-01T12:35:49.582000+01:00",
+      "LastModified": "2025-09-01T19:04:32.679000+01:00",
+      "LastStarted": "2025-09-01T18:04:22.615000+01:00",
+      "LastStopped": "2025-09-01T19:04:32.679000+01:00"
+    },
+    "ArtifactS3Location": "cw-syn-results-341823313949-us-east-1/canary/us-east-1/c7n-test-canary-start-7cd-79c79eff8135",
+    "RuntimeVersion": "syn-nodejs-puppeteer-11.0",
+    "ProvisionedResourceCleanup": "AUTOMATIC",
+    "Tags": [],
+    "Arn": "arn:aws:synthetics:us-east-1:341823313949:canary:c7n-test-canary-start",
+    "c7n:MatchedFilters": [
+      "Name"
+    ]
+  }
+]

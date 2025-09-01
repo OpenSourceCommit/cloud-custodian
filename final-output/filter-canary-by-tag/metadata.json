@@ -1,0 +1,93 @@
+{
+  "policy": {
+    "name": "filter-canary-by-tag",
+    "resource": "aws.cloudwatch-synthetics",
+    "filters": [
+      {
+        "type": "value",
+        "key": "tag:MyTagKey",
+        "value": "MyTagValue"
+      }
+    ]
+  },
+  "version": "0.9.46",
+  "execution": {
+    "id": "be3c399d-4c1a-4c85-82c8-7773e2b64924",
+    "start": 1756750057.417876,
+    "end_time": 1756750064.1187656,
+    "duration": 6.700889587402344
+  },
+  "config": {
+    "region": "us-east-1",
+    "regions": [
+      "us-east-1"
+    ],
+    "cache": "~/.cache/cloud-custodian.cache",
+    "profile": null,
+    "account_id": "341823313949",
+    "assume_role": null,
+    "session_policy": null,
+    "external_id": null,
+    "log_group": null,
+    "tracer": null,
+    "metrics_enabled": null,
+    "metrics": null,
+    "output_dir": "./final-output",
+    "cache_period": 15,
+    "dryrun": false,
+    "authorization_file": null,
+    "subparser": "run",
+    "config": null,
+    "configs": [
+      "real_policies.yml"
+    ],
+    "policy_filters": [],
+    "resource_types": [],
+    "verbose": null,
+    "quiet": null,
+    "debug": false,
+    "skip_validation": false,
+    "command": "c7n.commands.run",
+    "vars": null
+  },
+  "sys-stats": {
+    "snapshot_time": 6.700883626937866,
+    "num_fds": 1,
+    "cpu_user": 0.3799999999999999,
+    "cpu_system": 0.06000000000000001,
+    "num_ctx_switches_voluntary": 189,
+    "num_ctx_switches_involuntary": 3,
+    "read_count": 376,
+    "write_count": 46,
+    "write_bytes": 73728,
+    "rss": 11796480,
+    "vms": 11616256,
+    "shared": 393216,
+    "data": 11616256
+  },
+  "api-stats": {
+    "synthetics.DescribeCanaries": 1,
+    "sts.GetCallerIdentity": 1,
+    "synthetics.ListTagsForResource": 4
+  },
+  "metrics": [
+    {
+      "MetricName": "ResourceCount",
+      "Timestamp": "2025-09-01T19:07:44.118319",
+      "Value": 1,
+      "Unit": "Count"
+    },
+    {
+      "MetricName": "ResourceTime",
+      "Timestamp": "2025-09-01T19:07:44.118333",
+      "Value": 6.6814658641815186,
+      "Unit": "Seconds"
+    },
+    {
+      "MetricName": "ActionTime",
+      "Timestamp": "2025-09-01T19:07:44.118750",
+      "Value": 3.337860107421875e-06,
+      "Unit": "Seconds"
+    }
+  ]
+}

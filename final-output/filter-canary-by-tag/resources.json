@@ -1,0 +1,46 @@
+[
+  {
+    "Id": "aa2125bf-f10f-4877-b4c7-70e8a4bf6da0",
+    "Name": "c7n-test-canary-tag",
+    "Code": {
+      "Handler": "pageLoadBlueprint.handler"
+    },
+    "ExecutionRoleArn": "arn:aws:iam::341823313949:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-tag-fc8-fb81cb5b9c83",
+    "Schedule": {
+      "Expression": "rate(5 minutes)",
+      "DurationInSeconds": 0,
+      "RetryConfig": {
+        "MaxRetries": 0
+      }
+    },
+    "RunConfig": {
+      "TimeoutInSeconds": 300,
+      "MemoryInMB": 1500,
+      "ActiveTracing": false,
+      "EphemeralStorage": 1024
+    },
+    "SuccessRetentionPeriodInDays": 31,
+    "FailureRetentionPeriodInDays": 31,
+    "Status": {
+      "State": "RUNNING"
+    },
+    "Timeline": {
+      "Created": "2025-09-01T12:37:35.323000+01:00",
+      "LastModified": "2025-09-01T12:37:47.945000+01:00",
+      "LastStarted": "2025-09-01T12:37:47.945000+01:00"
+    },
+    "ArtifactS3Location": "cw-syn-results-341823313949-us-east-1/canary/us-east-1/c7n-test-canary-tag-fc8-fb81cb5b9c83",
+    "RuntimeVersion": "syn-nodejs-puppeteer-11.0",
+    "ProvisionedResourceCleanup": "AUTOMATIC",
+    "Tags": [
+      {
+        "Key": "MyTagKey",
+        "Value": "MyTagValue"
+      }
+    ],
+    "Arn": "arn:aws:synthetics:us-east-1:341823313949:canary:c7n-test-canary-tag",
+    "c7n:MatchedFilters": [
+      "tag:MyTagKey"
+    ]
+  }
+]
