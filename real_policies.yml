@@ -2,6 +2,11 @@ policies:
   - name: filter-canary-by-tag
     resource: aws.cloudwatch-synthetics
     filters:
+      - Name: 
+
+  - name: filter-canary-by-tag
+    resource: aws.cloudwatch-synthetics
+    filters:
       - type: value
         key: "tag:MyTagKey"
         value: "MyTagValue"
