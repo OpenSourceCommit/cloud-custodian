@@ -10,7 +10,7 @@ import botocore.exceptions
 from botocore.config import Config
 
 from c7n import query
-from c7n.actions import Action, BaseAction
+from c7n.actions import BaseAction
 from c7n.exceptions import PolicyValidationError
 from c7n.filters import Filter, MetricsFilter
 from c7n.filters.core import parse_date, ValueFilter
@@ -1324,7 +1324,6 @@ class SyntheticsCanary(QueryResourceManager):
         dimension = 'CanaryName'
         config_type = cfn_type = 'AWS::Synthetics::Canary'
         enum_spec = ('describe_canaries', 'Canaries', None)
-        detail_spec = ('get_canary', 'Name', 'Name' 'Canary')
         universal_taggable = True
 
     permissions = (
@@ -1337,7 +1336,6 @@ class SyntheticsCanary(QueryResourceManager):
     def augment(self, resources):
         client = local_session(self.session_factory).client('synthetics')
         region = self.config.region
-
         sts = local_session(self.session_factory).client('sts')
         real_account_id = sts.get_caller_identity()["Account"]
 
@@ -1346,10 +1344,13 @@ class SyntheticsCanary(QueryResourceManager):
             if not arn:
                 arn = f"arn:aws:synthetics:{region}:{real_account_id}:canary:{r['Name']}"
                 r["Arn"] = arn
-            # AWS returns tags as a dict { "Key": "Value" }
-            tag_dict = client.list_tags_for_resource(ResourceArn=arn).get("Tags", {})
 
-            # Custodian expects [{"Key": k, "Value": v}, ...]
+            # Enrich with full details
+            detail = client.get_canary(Name=r['Name']).get('Canary', {})
+            r.update(detail)  # merge in fields like SourceLocationArn, EngineConfigs, etc.
+
+            # Add tags (Custodian expects list form)
+            tag_dict = client.list_tags_for_resource(ResourceArn=arn).get("Tags", {})
             r["Tags"] = [{"Key": k, "Value": v} for k, v in tag_dict.items()]
 
         return resources
