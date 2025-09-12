@@ -12,10 +12,10 @@
   },
   "version": "0.9.46",
   "execution": {
-    "id": "be3c399d-4c1a-4c85-82c8-7773e2b64924",
-    "start": 1756750057.417876,
-    "end_time": 1756750064.1187656,
-    "duration": 6.700889587402344
+    "id": "65cf28c5-de8b-4dcb-b637-1a1468128a88",
+    "start": 1757702211.8637273,
+    "end_time": 1757702218.1763222,
+    "duration": 6.312594890594482
   },
   "config": {
     "region": "us-east-1",
@@ -51,42 +51,45 @@
     "vars": null
   },
   "sys-stats": {
-    "snapshot_time": 6.700883626937866,
+    "snapshot_time": 6.312721490859985,
     "num_fds": 1,
-    "cpu_user": 0.3799999999999999,
-    "cpu_system": 0.06000000000000001,
-    "num_ctx_switches_voluntary": 189,
-    "num_ctx_switches_involuntary": 3,
-    "read_count": 376,
-    "write_count": 46,
+    "cpu_user": 0.54,
+    "cpu_system": 0.10000000000000003,
+    "num_ctx_switches_voluntary": 209,
+    "num_ctx_switches_involuntary": 4,
+    "read_count": 505,
+    "write_count": 50,
     "write_bytes": 73728,
-    "rss": 11796480,
-    "vms": 11616256,
+    "rss": 17547264,
+    "vms": 18194432,
     "shared": 393216,
-    "data": 11616256
+    "data": 18194432
   },
   "api-stats": {
     "synthetics.DescribeCanaries": 1,
     "sts.GetCallerIdentity": 1,
-    "synthetics.ListTagsForResource": 4
+    "synthetics.GetCanary": 1,
+    "synthetics.ListTagsForResource": 1,
+    "synthetics.GetCanaryRuns": 1,
+    "s3.GetObject": 1
   },
   "metrics": [
     {
       "MetricName": "ResourceCount",
-      "Timestamp": "2025-09-01T19:07:44.118319",
+      "Timestamp": "2025-09-12T19:36:58.175096",
       "Value": 1,
       "Unit": "Count"
     },
     {
       "MetricName": "ResourceTime",
-      "Timestamp": "2025-09-01T19:07:44.118333",
-      "Value": 6.6814658641815186,
+      "Timestamp": "2025-09-12T19:36:58.175183",
+      "Value": 6.290573358535767,
       "Unit": "Seconds"
     },
     {
       "MetricName": "ActionTime",
-      "Timestamp": "2025-09-01T19:07:44.118750",
-      "Value": 3.337860107421875e-06,
+      "Timestamp": "2025-09-12T19:36:58.176281",
+      "Value": 1.1444091796875e-05,
       "Unit": "Seconds"
     }
   ]

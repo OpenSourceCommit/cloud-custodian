@@ -1,11 +1,11 @@
 [
   {
-    "Id": "aa2125bf-f10f-4877-b4c7-70e8a4bf6da0",
+    "Id": "bd987531-6662-43aa-8790-5f2e0fbba06f",
     "Name": "c7n-test-canary-tag",
     "Code": {
       "Handler": "pageLoadBlueprint.handler"
     },
-    "ExecutionRoleArn": "arn:aws:iam::341823313949:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-tag-fc8-fb81cb5b9c83",
+    "ExecutionRoleArn": "arn:aws:iam::341823313949:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-tag-837-17dcbbc265b8",
     "Schedule": {
       "Expression": "rate(5 minutes)",
       "DurationInSeconds": 0,
@@ -25,11 +25,11 @@
       "State": "RUNNING"
     },
     "Timeline": {
-      "Created": "2025-09-01T12:37:35.323000+01:00",
-      "LastModified": "2025-09-01T12:37:47.945000+01:00",
-      "LastStarted": "2025-09-01T12:37:47.945000+01:00"
+      "Created": "2025-09-12T18:45:07.608000+01:00",
+      "LastModified": "2025-09-12T18:45:26.497000+01:00",
+      "LastStarted": "2025-09-12T18:45:26.497000+01:00"
     },
-    "ArtifactS3Location": "cw-syn-results-341823313949-us-east-1/canary/us-east-1/c7n-test-canary-tag-fc8-fb81cb5b9c83",
+    "ArtifactS3Location": "cw-syn-results-341823313949-us-east-1/canary/us-east-1/c7n-test-canary-tag-837-17dcbbc265b8",
     "RuntimeVersion": "syn-nodejs-puppeteer-11.0",
     "ProvisionedResourceCleanup": "AUTOMATIC",
     "Tags": [
@@ -39,6 +39,10 @@
       }
     ],
     "Arn": "arn:aws:synthetics:us-east-1:341823313949:canary:c7n-test-canary-tag",
+    "DestinationUrl": "https://www.google.com/",
+    "AllDestinationUrls": [
+      "https://www.google.com/"
+    ],
     "c7n:MatchedFilters": [
       "tag:MyTagKey"
     ]

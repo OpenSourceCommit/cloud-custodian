@@ -2,32 +2,27 @@ policies:
   - name: filter-canary-by-tag
     resource: aws.cloudwatch-synthetics
     filters:
-      - Name: 
-
-  - name: filter-canary-by-tag
-    resource: aws.cloudwatch-synthetics
-    filters:
       - type: value
         key: "tag:MyTagKey"
         value: "MyTagValue"
 
-  - name: delete-canary
-    resource: aws.cloudwatch-synthetics
-    filters:
-      - Name: c7n-test-canary-delete
-    actions:
-      - delete
+  # - name: delete-canary
+  #   resource: aws.cloudwatch-synthetics
+  #   filters:
+  #     - Name: c7n-test-canary-delete
+  #   actions:
+  #     - delete
 
-  - name: stop-canary
-    resource: aws.cloudwatch-synthetics
-    filters:
-      - Name: c7n-test-canary-stop
-    actions:
-      - stop
+  # - name: stop-canary
+  #   resource: aws.cloudwatch-synthetics
+  #   filters:
+  #     - Name: c7n-test-canary-stop
+  #   actions:
+  #     - stop
 
-  - name: start-canary
-    resource: aws.cloudwatch-synthetics
-    filters:
-      - Name: c7n-test-canary-start
-    actions:
-      - start
+  # - name: start-canary
+  #   resource: aws.cloudwatch-synthetics
+  #   filters:
+  #     - Name: c7n-test-canary-start
+  #   actions:
+  #     - start

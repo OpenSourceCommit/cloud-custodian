@@ -3,12 +3,12 @@
     "data": {
         "ResponseMetadata": {},
         "Canary": {
-            "Id": "39dbc46f-7f7e-411f-9027-17e9c4c76e14",
+            "Id": "8e8f4ab3-ddfe-468a-96cb-5caf4ef8c362",
             "Name": "c7n-test-canary-delete",
             "Code": {
                 "Handler": "pageLoadBlueprint.handler"
             },
-            "ExecutionRoleArn": "arn:aws:iam::644160558196:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-delet-306-1c34bfd8dd28",
+            "ExecutionRoleArn": "arn:aws:iam::644160558196:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-delet-bb7-2e0ada5d0e55",
             "Schedule": {
                 "Expression": "rate(5 minutes)",
                 "DurationInSeconds": 0,
@@ -32,24 +32,24 @@
                     "__class__": "datetime",
                     "year": 2025,
                     "month": 9,
-                    "day": 8,
-                    "hour": 9,
-                    "minute": 27,
-                    "second": 26,
-                    "microsecond": 130000
+                    "day": 12,
+                    "hour": 19,
+                    "minute": 49,
+                    "second": 3,
+                    "microsecond": 422000
                 },
                 "LastModified": {
                     "__class__": "datetime",
                     "year": 2025,
                     "month": 9,
-                    "day": 8,
-                    "hour": 9,
-                    "minute": 27,
-                    "second": 33,
-                    "microsecond": 97000
+                    "day": 12,
+                    "hour": 19,
+                    "minute": 49,
+                    "second": 10,
+                    "microsecond": 447000
                 }
             },
-            "ArtifactS3Location": "cw-syn-results-644160558196-us-east-1/canary/us-east-1/c7n-test-canary-delete-306-1c34bfd8dd28",
+            "ArtifactS3Location": "cw-syn-results-644160558196-us-east-1/canary/us-east-1/c7n-test-canary-delete-bb7-2e0ada5d0e55",
             "RuntimeVersion": "syn-nodejs-puppeteer-11.0",
             "ProvisionedResourceCleanup": "AUTOMATIC",
             "Tags": {}

@@ -1300,19 +1300,7 @@ class DeliveryDestinationDelete(BaseAction):
 
 @resources.register('cloudwatch-synthetics')
 class SyntheticsCanary(QueryResourceManager):
-    """AWS CloudWatch Synthetics Canary
-
-    Example:
-        .. code-block:: yaml
-
-            policies:
-              - name: stop-failed-canaries
-                resource: aws.cloudwatch-synthetics
-                filters:
-                  - State.CurrentStatus.State: FAILED
-                actions:
-                  - type: delete
-    """
+    """AWS CloudWatch Synthetics Canary"""
 
     class resource_type(TypeInfo):
         service = 'synthetics'
@@ -1327,14 +1315,16 @@ class SyntheticsCanary(QueryResourceManager):
         universal_taggable = True
 
     permissions = (
-    "synthetics:DescribeCanaries",
-    "synthetics:ListTagsForResource",
-    "synthetics:StartCanary",
-    "synthetics:StopCanary",
-    "synthetics:DeleteCanary",)
+        "synthetics:DescribeCanaries",
+        "synthetics:ListTagsForResource",
+        "synthetics:StartCanary",
+        "synthetics:StopCanary",
+        "synthetics:DeleteCanary",
+    )
 
     def augment(self, resources):
         client = local_session(self.session_factory).client('synthetics')
+        s3 = local_session(self.session_factory).client('s3')
         region = self.config.region
         sts = local_session(self.session_factory).client('sts')
         real_account_id = sts.get_caller_identity()["Account"]
@@ -1345,13 +1335,40 @@ class SyntheticsCanary(QueryResourceManager):
                 arn = f"arn:aws:synthetics:{region}:{real_account_id}:canary:{r['Name']}"
                 r["Arn"] = arn
 
-            # Enrich with full details
+            # 🔹 Enrich with full canary details
             detail = client.get_canary(Name=r['Name']).get('Canary', {})
-            r.update(detail)  # merge in fields like SourceLocationArn, EngineConfigs, etc.
+            r.update(detail)
 
-            # Add tags (Custodian expects list form)
+            # 🔹 Add tags in Custodian expected format
             tag_dict = client.list_tags_for_resource(ResourceArn=arn).get("Tags", {})
             r["Tags"] = [{"Key": k, "Value": v} for k, v in tag_dict.items()]
+
+            # 🔹 Drill into the most recent run to get the artifact location
+            runs = client.get_canary_runs(Name=r['Name'], MaxResults=1).get("CanaryRuns", [])
+            if runs:
+                artifact = runs[0].get("ArtifactS3Location")
+                if artifact:
+                    # artifact looks like: bucket/prefix...
+                    bucket, key_prefix = artifact.split("/", 1)
+                    report_key = f"{key_prefix}/SyntheticsReport-PASSED.json"
+
+                    try:
+                        obj = s3.get_object(Bucket=bucket, Key=report_key)
+                        body = obj["Body"].read().decode("utf-8")
+                        import json
+                        report = json.loads(body)
+
+                        # 🔹 Extract destinationUrls from customerScript.steps
+                        steps = report.get("customerScript", {}).get("steps", [])
+                        dest_urls = [
+                            s.get("destinationUrl") for s in steps if "destinationUrl" in s]
+
+                        if dest_urls:
+                            r["DestinationUrl"] = dest_urls[0]
+                            r["AllDestinationUrls"] = dest_urls
+
+                    except Exception:
+                        r["DestinationUrl"] = None
 
         return resources
 
