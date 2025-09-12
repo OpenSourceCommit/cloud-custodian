@@ -1403,14 +1403,3 @@ class DeleteCanary(BaseAction):
         client = local_session(self.manager.session_factory).client('synthetics')
         for r in resources:
             client.delete_canary(Name=r['Name'])
-
-
-@SyntheticsCanary.filter_registry.register('state')
-class CanaryStateFilter(ValueFilter):
-    """Filter canaries by their current state"""
-
-    schema = type_schema('state', rinherit=ValueFilter.schema)
-    permissions = ('synthetics:DescribeCanaries',)
-
-    def __call__(self, r):
-        return self.match(r.get('Status', {}).get('State'))
