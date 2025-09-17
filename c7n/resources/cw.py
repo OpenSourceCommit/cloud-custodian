@@ -1308,18 +1308,13 @@ class SyntheticsCanary(QueryResourceManager):
         name = 'Name'
         date = 'Created'
         arn_type = 'canary'
-        arn = 'Arn'
         dimension = 'CanaryName'
         config_type = cfn_type = 'AWS::Synthetics::Canary'
         enum_spec = ('describe_canaries', 'Canaries', None)
-        universal_taggable = True
+        universal_taggable = object()
 
     permissions = (
-        "synthetics:DescribeCanaries",
         "synthetics:ListTagsForResource",
-        "synthetics:StartCanary",
-        "synthetics:StopCanary",
-        "synthetics:DeleteCanary",
     )
 
     def augment(self, resources):
@@ -1380,7 +1375,11 @@ class StartCanary(BaseAction):
     def process(self, resources):
         client = local_session(self.manager.session_factory).client('synthetics')
         for r in resources:
-            client.start_canary(Name=r['Name'])
+            try:
+                client.start_canary(Name=r['Name'])
+            except Exception as e:
+                self.log.error(
+                    f"Error starting canary {r['Name']}: {e}")
 
 
 @SyntheticsCanary.action_registry.register('stop')
@@ -1391,7 +1390,11 @@ class StopCanary(BaseAction):
         """Stop all running resources"""
         client = local_session(self.manager.session_factory).client('synthetics')
         for r in resources:
-            client.stop_canary(Name=r['Name'])
+            try:
+                client.stop_canary(Name=r['Name'])
+            except Exception as e:
+                self.log.error(
+                    f"Error stopping canary {r['Name']}: {e}")
 
 
 @SyntheticsCanary.action_registry.register('delete')
@@ -1402,4 +1405,8 @@ class DeleteCanary(BaseAction):
         """Delete resources"""
         client = local_session(self.manager.session_factory).client('synthetics')
         for r in resources:
-            client.delete_canary(Name=r['Name'])
+            try:
+                client.delete_canary(Name=r['Name'])
+            except Exception as e:
+                self.log.error(
+                    f"Error deleting canary {r['Name']}: {e}")

@@ -3,12 +3,12 @@
     "data": {
         "ResponseMetadata": {},
         "Canary": {
-            "Id": "95117b61-048a-431f-80ea-f12068a8fa15",
-            "Name": "c7n-test-canary-start",
+            "Id": "22cc8216-1346-494f-b0ff-eeb5b7133c0e",
+            "Name": "c7n-test-canary-tag",
             "Code": {
                 "Handler": "pageLoadBlueprint.handler"
             },
-            "ExecutionRoleArn": "arn:aws:iam::644160558196:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-start-942-3186683286f0",
+            "ExecutionRoleArn": "arn:aws:iam::644160558196:role/service-role/CloudWatchSyntheticsRole-c7n-test-canary-tag-648-15448b1bbfaa",
             "Schedule": {
                 "Expression": "rate(5 minutes)",
                 "DurationInSeconds": 0,
@@ -25,34 +25,46 @@
             "SuccessRetentionPeriodInDays": 31,
             "FailureRetentionPeriodInDays": 31,
             "Status": {
-                "State": "READY"
+                "State": "RUNNING"
             },
             "Timeline": {
                 "Created": {
                     "__class__": "datetime",
                     "year": 2025,
                     "month": 9,
-                    "day": 12,
-                    "hour": 19,
-                    "minute": 51,
-                    "second": 17,
-                    "microsecond": 444000
+                    "day": 17,
+                    "hour": 15,
+                    "minute": 54,
+                    "second": 45,
+                    "microsecond": 397000
                 },
                 "LastModified": {
                     "__class__": "datetime",
                     "year": 2025,
                     "month": 9,
-                    "day": 12,
-                    "hour": 19,
-                    "minute": 51,
-                    "second": 24,
-                    "microsecond": 591000
+                    "day": 17,
+                    "hour": 15,
+                    "minute": 55,
+                    "second": 6,
+                    "microsecond": 759000
+                },
+                "LastStarted": {
+                    "__class__": "datetime",
+                    "year": 2025,
+                    "month": 9,
+                    "day": 17,
+                    "hour": 15,
+                    "minute": 55,
+                    "second": 6,
+                    "microsecond": 759000
                 }
             },
-            "ArtifactS3Location": "cw-syn-results-644160558196-us-east-1/canary/us-east-1/c7n-test-canary-start-942-3186683286f0",
+            "ArtifactS3Location": "cw-syn-results-644160558196-us-east-1/canary/us-east-1/c7n-test-canary-tag-648-15448b1bbfaa",
             "RuntimeVersion": "syn-nodejs-puppeteer-11.0",
             "ProvisionedResourceCleanup": "AUTOMATIC",
-            "Tags": {}
+            "Tags": {
+                "MyTagKey": "MyTagValue"
+            }
         }
     }
 }

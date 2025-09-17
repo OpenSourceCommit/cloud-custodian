@@ -2,41 +2,6 @@
     "status_code": 200,
     "data": {
         "ResponseMetadata": {},
-        "CanaryRuns": [
-            {
-                "Id": "465d3690-91e6-4658-a11b-1a4b7347696d",
-                "Name": "c7n-test-canary-tag",
-                "Status": {
-                    "State": "PASSED",
-                    "StateReason": "",
-                    "StateReasonCode": "",
-                    "TestResult": "PASSED"
-                },
-                "Timeline": {
-                    "Started": {
-                        "__class__": "datetime",
-                        "year": 2025,
-                        "month": 9,
-                        "day": 12,
-                        "hour": 19,
-                        "minute": 50,
-                        "second": 16,
-                        "microsecond": 399000
-                    },
-                    "Completed": {
-                        "__class__": "datetime",
-                        "year": 2025,
-                        "month": 9,
-                        "day": 12,
-                        "hour": 19,
-                        "minute": 50,
-                        "second": 24,
-                        "microsecond": 984000
-                    }
-                },
-                "ArtifactS3Location": "cw-syn-results-644160558196-us-east-1/canary/us-east-1/c7n-test-canary-tag-837-17dcbbc265b8/2025/09/12/18/50-16-396/FIREFOX"
-            }
-        ],
-        "NextToken": "2025-09-12T18:50:16.396Z*FIREFOX"
+        "CanaryRuns": []
     }
 }
